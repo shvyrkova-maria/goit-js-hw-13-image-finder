@@ -5,7 +5,7 @@ import '@pnotify/core/dist/BrightTheme.css';
 export const infoNotice = info({
   text: 'No matches. Try again',
   autoOpen: false,
-  delay: 5000,
+  delay: 2000,
   sticker: false,
   maxTextHeight: null,
   icon: true,

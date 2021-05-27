@@ -1,6 +1,7 @@
 import './sass/main.scss';
 import cardTmpl from './templates/card-tmpl.hbs';
 import debounce from 'lodash.debounce';
+import { modal } from './js/modal.js';
 import { infoNotice, errorNotice } from './js/notifications.js';
 import getRefs from './js/refs.js';
 import ApiService from './js/api-service.js';
@@ -10,6 +11,7 @@ const imageSearch = new ApiService();
 
 refs.search.addEventListener('input', debounce(onInputChange, 1500));
 refs.loadBtn.addEventListener('click', fetchGalleryImages);
+refs.gallery.addEventListener('click', onGalleryImageClick);
 
 function onInputChange(e) {
   imageSearch.query = e.target.value;
@@ -25,6 +27,17 @@ function onInputChange(e) {
 
 function fetchGalleryImages() {
   imageSearch.fetchImages().then(createGallery).catch(createErrorNotice);
+}
+
+function onGalleryImageClick(e) {
+  if (!e.target.classList.contains('photo')) {
+    return;
+  }
+  modal.show(() => {
+    const modalRef = document.querySelector('.modal-image');
+    modalRef.src = e.target.dataset.source;
+    modalRef.alt = e.target.alt;
+  });
 }
 
 function createGallery(images) {
