@@ -1,6 +1,5 @@
 import './sass/main.scss';
 import cardTmpl from './templates/card-tmpl.hbs';
-// const debounce = require('lodash.debounce');
 import debounce from 'lodash.debounce';
 import { infoNotice, errorNotice } from './js/notifications.js';
 import getRefs from './js/refs.js';
@@ -10,7 +9,7 @@ const refs = getRefs();
 const imageSearch = new ApiService();
 
 refs.search.addEventListener('input', debounce(onInputChange, 1500));
-refs.loadBtn.addEventListener('click', onLoadBtnClick);
+refs.loadBtn.addEventListener('click', fetchGalleryImages);
 
 function onInputChange(e) {
   imageSearch.query = e.target.value;
@@ -20,22 +19,26 @@ function onInputChange(e) {
     refs.loadBtn.classList.add('hidden');
   } else {
     imageSearch.resetPage();
-    imageSearch.fetchImage().then(makeGalleryMarkup).catch(createErrorNotice);
-    refs.loadBtn.classList.remove('hidden');
+    fetchGalleryImages();
   }
 }
 
-function onLoadBtnClick() {
-  imageSearch.fetchImage().then(makeGalleryMarkup).catch(createErrorNotice);
+function fetchGalleryImages() {
+  imageSearch.fetchImages().then(createGallery).catch(createErrorNotice);
 }
 
-function makeGalleryMarkup(images) {
+function createGallery(images) {
   if (images.length === 0) {
     return createInfoNotice();
   } else {
-    refs.gallery.insertAdjacentHTML('beforeend', cardTmpl(images));
+    makeGalleryMarkup(images);
+    refs.loadBtn.classList.remove('hidden');
     scrollOnLoadBtnClick();
   }
+}
+
+function makeGalleryMarkup(images) {
+  refs.gallery.insertAdjacentHTML('beforeend', cardTmpl(images));
 }
 
 function clearGalleryMarkup() {

@@ -4,7 +4,7 @@ export default class ApiService {
     this.page = 1;
   }
 
-  fetchImage() {
+  fetchImages() {
     const BASE_URL = 'https://pixabay.com/api';
     const API_KEY = '21768935-3fedd5c602a3f7ac5e18d4c15';
 
